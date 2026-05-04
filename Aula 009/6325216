@@ -11,3 +11,14 @@ k8s-questao-4-5/
 │   └── screenshot-access.png      # Print do acesso ao Nginx
 ├── fluxo-comunicacao.md       # Documentação do fluxo que descrevemos
 └── README.md                  # Descrição do projeto
+
+# 1. Criar pasta principal
+mkdir -p k8s-questao-4-5/{manifests,evidence}
+
+# 2. Colocar os manifests na pasta manifests/
+#    - deployment.yaml
+#    - service.yaml (com web-service-tf09)
+
+# 3. Salvar as evidências (screenshots) na pasta evidence/
+
+# 4. Adicionar a documentação do fluxo em fluxo-comunicacao.md
