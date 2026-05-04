@@ -1,0 +1,19 @@
+Aqui está o fluxo de comunicação completo, desde o acesso externo até o Pod Nginx, com os quatro objetos/componentes do Kubernetes na ordem correta:
+
+Fluxo de Requisição (NodePort → Pod)
+Etapa	Componente	Descrição
+1. Entrada	NodePort	A requisição chega no IP de qualquer Node do cluster na porta 30000 (ex: IP-Node:30000) 
+2. Service	web-service-tf09 (Service tipo NodePort)	O Service intercepta a requisição e usa o campo selector (que contém labels) para identificar quais Pods são elegíveis 
+3. Proxy	kube-proxy	Componente interno do K8s responsável por rotear o tráfego do Service para um dos Pods ativos, usando balanceamento de carga (round-robin por padrão) 
+4. Destino	Pod (gerenciado pelo Deployment)	A requisição chega a um dos Pods rodando o Nginx na porta 80 (targetPort) 
+Detalhamento do funcionamento:
+NodePort: Cada Node no cluster se configura para escutar na porta 30000 e encaminha o tráfego para o Service associado
+
+Service (selector): O campo selector no manifest do Service contém pares chave-valor (ex: app: web) que devem bater com os labels dos Pods para que sejam selecionados como backends
+
+kube-proxy: Monitora os objetos Service e EndpointSlice, programando as regras de rede (iptables/IPVS) para rotear o tráfego até os Pods prontos
+
+Pod: O Deployment gerencia a criação e replicação dos Pods, garantindo que sempre haja instâncias ativas do Nginx disponíveis para receber o tráfego
+
+Esse fluxo garante que o usuário externo acesse a aplicação de forma estável, mesmo com múltiplos Pods e possíveis reinícios/escalamentos.
+
