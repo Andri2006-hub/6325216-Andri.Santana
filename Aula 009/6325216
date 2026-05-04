@@ -1,1 +1,13 @@
 
+k8s-questao-4-5/
+├── manifests/
+│   ├── deployment.yaml        # Manifesto do Deployment (Questão 4/5)
+│   ├── service.yaml           # Manifesto do Service web-service-tf09 (Questão 5)
+│   └── nginx-pod.yaml         # Manifesto do Pod (se criado separadamente)
+├── evidence/
+│   ├── screenshot-nodeport.png    #Print da porta 30000 acessível
+│   ├── screenshot-service.png     # Print do Service criado
+│   ├── screenshot-pods.png        # Print dos Pods rodando
+│   └── screenshot-access.png      # Print do acesso ao Nginx
+├── fluxo-comunicacao.md       # Documentação do fluxo que descrevemos
+└── README.md                  # Descrição do projeto
