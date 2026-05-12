@@ -1,51 +1,113 @@
-# Implementação de Servidor e Nuvem (Cloud)
-## Sobre o Repositório
-Este repositório contém o material completo do curso **Analise e Desenvolvimento de Sistemas** da disciplina **Implementação de Servidor e Nuvem (Cloud)** do Centro Universitário de Atibaia - [UniFAAT](https://www.unifaat.com.br/).
+# TF - Tarefa Final - Aula 1
 
-Esta disciplina foi desenvolvido para capacitar estudantes no uso de tecnologias de containerização, orquestração e deploy em nuvem, utilizando o ambiente WSL (Windows Subsystem for Linux) como base de desenvolvimento.
+**Disciplina:** Implementação de servidor e nuvem (cloud)
+**Aula:** 1 - Fundamentos, Contêineres e Setup do Ambiente WSL/Linux
+**Objetivo do TF:** Avaliar a compreensão da diferença entre VM e Contêiner e o domínio dos comandos essenciais de administração no terminal Linux (WSL).
 
-## Objetivos do Curso
+---
 
-### Objetivo Geral
-Capacitar os alunos para implementar, gerenciar e fazer deploy de aplicações containerizadas utilizando Docker, ferramentas de orquestração e serviços de nuvem AWS, preparando-os para o mercado de trabalho moderno em DevOps e Cloud Computing.
+## Questão 1: Conceitos de Virtualização (Teórica)
 
-### Objetivos Específicos
-- Dominar os fundamentos de containerização com Docker
-- Construir e otimizar imagens Docker personalizadas
-- Implementar persistência de dados com volumes
-- Configurar redes Docker para comunicação entre serviços
-- Orquestrar aplicações multi-contêiner com Docker Compose e Swarm
-- Introduzir conceitos básicos de Kubernetes
-- Implementar deploy de aplicações na AWS
-- Desenvolver pipelines básicos de CI/CD
-- Integrar ferramentas de desenvolvimento no ambiente WSL/Linux
+1. Qual opção oferece maior rapidez de inicialização e menor overhead (gasto de recursos) e por quê?
 
-## Recursos Adicionais
+   - **Resposta:** O contêiner Docker oferece maior rapidez de inicialização e menor overhead. Isso ocorre porque o contêiner compartilha o kernel do host Linux em vez de carregar um Sistema Operacional Convidado completo em cima do Hypervisor. Com o kernel comum, o contêiner inicia processos diretamente, sem a sobrecarga de bootar um SO inteiro.
 
-- **[Solução de Problemas Comuns](troubleshooting.md)** - Guia completo de solução de problemas
-- **[Links Úteis](linksUteis.md)** - Links úteis, ferramentas e certificações
+2. Qual a principal diferença arquitetural que permite essa vantagem de peso e velocidade no Contêiner?
 
-## Contribuições
-Este material foi desenvolvido para fins educacionais. Sugestões de melhorias são bem-vindas através de:
-- Issues no GitHub
-- Pull requests com correções
-- Feedback direto aos mantenedores
+   - **Resposta:** A diferença arquitetural é que a VM virtualiza todo o hardware e roda um sistema operacional completo separado, enquanto o contêiner compartilha o kernel do host e isola apenas o espaço de usuário. Essa camada de isolamento mais leve permite uso mais eficiente de recursos e inicialização mais rápida.
 
-## Suporte
+---
 
-### Suporte Técnico
-- **Documentação:** Consulte os arquivos Lab*.md de cada aula
-- **Troubleshooting:** Seções específicas em cada laboratório
-- **Comunidade:** Utilize as issues do GitHub
+## Questão 2: Setup e Administração do WSL (Prática e Teórica)
 
+### a) Prática
 
-## Licença
+Comandos utilizados no terminal WSL/Linux:
 
-Este projeto está licenciado sob a [MIT License](LICENSE) - veja o arquivo LICENSE para detalhes.
+```bash
+cd ~
+mkdir -p devops_tf1/src devops_tf1/config
+cd devops_tf1
+touch src/Dockerfile
+```
 
-## Reconhecimentos
+### b) Teórica
 
-Desenvolvido pelo corpo docente do Centro Universitário de Atibaia (UniFAAT) para a disciplina de Implementação de Servidor e Nuvem (Cloud), com foco na preparação de profissionais para o mercado de tecnologia moderno.
+- Comando para exibir o conteúdo do arquivo `Dockerfile`:
 
-> **Centro Universitário de Atibaia - UniFAAT**  
-*Formando profissionais para o futuro da tecnologia* 
+```bash
+cat src/Dockerfile
+```
+
+- Comando para verificar se os diretórios `src` e `config` existem no `devops_tf1`:
+
+```bash
+ls -l devops_tf1
+```
+
+ou
+
+```bash
+test -d devops_tf1/src && echo "src existe"
+test -d devops_tf1/config && echo "config existe"
+```
+
+---
+
+## Questão 3: Manipulação e Permissões (Prática e Teórica)
+
+### a) Prática
+
+Comandos utilizados no terminal WSL/Linux:
+
+```bash
+cd ~/devops_tf1
+touch pre_deploy.sh
+mv pre_deploy.sh config/
+chmod +x config/pre_deploy.sh
+```
+
+### b) Teórica
+
+- Comando para visualizar as permissões do arquivo `pre_deploy.sh`:
+
+```bash
+ls -l config/pre_deploy.sh
+```
+
+- O que significa a letra `x` nas permissões de usuário `-rwxr-xr-x`:
+
+  - A letra `x` significa que o arquivo é executável. No conjunto `-rwxr-xr-x`, o proprietário tem permissão de leitura, escrita e execução; o grupo tem leitura e execução; e outros têm leitura e execução.
+
+---
+
+## Questão 4: Uso do Redirecionamento (Prática)
+
+### a) Prática
+
+Comandos utilizados no terminal WSL/Linux:
+
+```bash
+echo "INICIO DO LOG" > ~/devops_tf1/log_processo.txt
+echo "Processo concluido" >> ~/devops_tf1/log_processo.txt
+cat ~/devops_tf1/log_processo.txt
+```
+
+---
+
+## Questão 5: Limpeza do Ambiente (Prática)
+
+### a) Prática
+
+Comandos utilizados no terminal WSL/Linux:
+
+```bash
+rm -rf ~/devops_tf1
+test -d ~/devops_tf1 && echo "Ainda existe" || echo "Removido com sucesso"
+```
+
+---
+
+## Observação
+
+O ambiente WSL não estava instalado no terminal disponível durante a execução desta tarefa, portanto os comandos são apresentados conforme solicitado, mas não foram executados neste ambiente específico.
