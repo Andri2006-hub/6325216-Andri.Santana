@@ -1,116 +1,58 @@
-# Implementação de Servidor e Nuvem (Cloud) - 2026.1
+# TF - Tarefa Final - Aula 3
 
-**Instituição:** UniFAAT - Centro Universitário  
-**Curso:** Análise e Desenvolvimento de Sistemas (ADS)  
-**Disciplina:** Implementação de Servidor e Nuvem (Cloud)  
-**Semestre:** 2026.1  
-**Professor:** Alexandre Tavares  
+## Questão 1: Conceito de Camadas (Teórica)
 
-## Sobre este Repositório
+### a) Redução de camadas ao agrupar RUN
+Agrupar quatro comandos `RUN` em um único `RUN` usando `&&` e `\` reduz o número de camadas geradas pela imagem Docker. Cada instrução `RUN` cria uma camada nova, então combinar múltiplos comandos em uma só resulta em menos camadas e melhora a eficiência da imagem.
 
-Este repositório contém todo o material didático, laboratórios práticos e tarefas da disciplina de **Implementação de Servidor e Nuvem**. Aqui você encontra desde os fundamentos de containers até deploy completo em produção na AWS.
+### b) Conceito de caching do Docker
+O Docker reutiliza camadas anteriores quando a instrução e seu contexto não mudam, acelerando builds subsequentes. A ordem das instruções importa porque a cache é aplicada sequencialmente; instruções alteradas invalidam a cache das camadas seguintes.
 
-O objetivo é proporcionar uma experiência prática e progressiva: cada aula constrói sobre a anterior, formando um caminho completo do desenvolvimento local ao deploy em nuvem.
+---
 
+## Questão 2: Sintaxe do Dockerfile (Prática e Teórica)
 
-## Por que este repositório é importante?
+### a) Instruções do Dockerfile
+1. `FROM node:20-alpine`
+2. `WORKDIR /app`
+3. `COPY . .`
+4. `CMD ["node", "server.js"]`
 
-- **Material centralizado:** Labs, tarefas e referências em um só lugar
-- **Histórico de aprendizado:** Acompanhe sua evolução ao longo do semestre
-- **Prática com Git:** O fluxo de entrega (fork + PR) simula o dia a dia profissional
-- **Portfólio:** Suas entregas ficam registradas no GitHub como evidência de competência
+### b) Diferença entre COPY e ADD
+`COPY . .` apenas copia arquivos e diretórios do contexto de build para a imagem. `ADD . .` também faz isso, mas pode descompactar arquivos tar e trazer conteúdo remoto via URL. Deve-se preferir `COPY` quando não há necessidade de extração automática ou download remoto, pois é mais explícito e seguro.
 
-## Ambiente de Trabalho
+---
 
-| Ferramenta | Função |
-|------------|--------|
-| **WSL2 (Ubuntu)** | Ambiente Linux no Windows para execução de comandos |
-| **Docker Desktop** | Construção e execução de containers |
-| **AWS CLI** | Interação com serviços AWS via terminal |
-| **kubectl** | Gerenciamento de clusters Kubernetes |
-| **Git + GitHub** | Versionamento e entrega de tarefas |
+## Questão 3: Otimização e .dockerignore (Prática e Teórica)
 
-## Estrutura do Repositório
-
+### a) Conteúdo do `.dockerignore`
 ```
-├── Aula 001/          # Fundamentos, Contêineres e Setup WSL/Linux
-├── Aula 002/          # Arquitetura Docker e Docker Desktop no WSL
-├── Aula 003/          # Construção de Imagens com Dockerfile
-├── Aula 004/          # Volumes e Persistência de Dados
-├── Aula 005/          # Redes no Docker
-├── Aula 006/          # Docker Compose e Ambientes Multi-Contêiner
-├── Aula 008/          # Introdução à Orquestração (Docker Swarm)
-├── Aula 009/          # Fundamentos de Kubernetes (K8s)
-├── Aula 010/          # Conceitos de Infraestrutura em Nuvem e AWS
-├── Aula 011/          # Armazenamento e Banco de Dados na AWS
-├── Aula 012/          # CI/CD Básico e Registro de Imagens (ECR)
-├── Aula 013/          # Deploy de Containers na AWS com EKS
-├── estruturaCurso.md  # Cronograma completo com módulos e aulas
-├── conceitosAbordados.md  # Glossário de conceitos técnicos
-├── ferramentasTecnologias.md  # Ferramentas utilizadas no curso
-├── linksUteis.md      # Links de referência e documentação
-└── troubleshooting.md # Soluções para problemas comuns
+node_modules
+.git
 ```
 
-## Módulos do Curso
+### b) Consequência de não usar `.dockerignore`
+Sem `.dockerignore`, o contexto de build pode incluir arquivos e pastas desnecessários, aumentando o tamanho do contexto, tornando o build mais lento e expondo dados sensíveis ou históricos do repositório. Isso reduz performance e aumenta risco de vazamento de informações.
 
-| Módulo | Aulas | Tema Principal | Carga Horária |
-|--------|-------|----------------|---------------|
-| **I** | 1-2 | Fundamentos e Setup WSL/Docker | 7h |
-| **II** | 3-4 | Build de Imagens e Persistência | 7h |
-| **III** | 5-6 | Redes Docker e Docker Compose | 7h |
-| **IV** | 7-8 | Avaliação I + Orquestração (Swarm) | 7h |
-| **V** | 9-10 | Kubernetes + Intro Cloud AWS | 7h |
-| **VI** | 11-12 | AWS Storage + CI/CD com ECR | 7h |
-| **VII** | 13-15 | Deploy EKS + Monitoramento + Revisão | 10,5h |
-| **VIII** | 16 | Avaliação Final Prática | 3,5h |
+---
 
-## Estrutura de cada Aula
+## Questão 4: CMD vs. ENTRYPOINT (Teórica)
 
-Cada pasta `Aula XXX/` contém:
+### a) Vantagem da combinação ENTRYPOINT + CMD
+A combinação `ENTRYPOINT` e `CMD` permite definir um executável fixo (`ENTRYPOINT`) e argumentos padrão substituíveis (`CMD`). Isso cria uma imagem mais flexível e reutilizável, pois mantém o comando principal fixo e permite alterar apenas parâmetros de execução.
 
-| Arquivo | Descrição |
-|---------|-----------|
-| `LabXXX.md` | Laboratório prático passo a passo |
-| `TAXXX.md` | Tarefa de Aula (exercícios em sala) |
-| `TFXXX.md` | Tarefa Final (entrega avaliativa) |
-| `README.md` | Resumo e objetivos da aula (quando disponível) |
+### b) Sobrescrever somente o argumento
+Na opção com `ENTRYPOINT ["/usr/bin/super_app"]` e `CMD ["arg1"]`, o usuário pode sobrescrever apenas o argumento sem reescrever o executável ao usar `docker run`.
 
-## Fluxo de Entrega de Tarefas
+---
 
-1. Faça um **fork** deste repositório
-2. Clone o fork para sua máquina local
-3. Crie uma pasta com seu **RA** dentro da aula correspondente
-4. Adicione suas respostas e evidências em um `README.md`
-5. Faça **commit** e **push** para seu fork
-6. Abra um **Pull Request** com o título: `RA - Nome do Aluno`
+## Questão 5: Build e Inspeção (Prática)
 
-### Atualizando o Fork
+### a) Comandos usados
+1. `docker build -t minha-imagem:tf3 .`
+2. `docker image inspect minha-imagem:tf3 --format='{{json .RootFS.Layers}}'`
 
-```bash
-git remote add upstream https://github.com/professor-ale/unifaat_implantacao_servidores-202601.git
-git fetch upstream
-git checkout main
-git merge upstream/main
-git push origin main
-```
+> Observação: também é possível usar `docker history minha-imagem:tf3` para listar camadas e tamanho de cada uma.
 
-## Requisitos do Ambiente
-
-- Windows 10/11 com WSL2 habilitado
-- Ubuntu (via Microsoft Store)
-- Docker Desktop com integração WSL2
-- Conta AWS Academy ou AWS Free Tier
-- Git instalado no WSL
-- Editor de código (VS Code recomendado)
-
-## Links Úteis
-
-- [Documentação Docker](https://docs.docker.com/)
-- [Documentação Kubernetes](https://kubernetes.io/docs/)
-- [AWS CLI Reference](https://docs.aws.amazon.com/cli/)
-- [AWS EKS User Guide](https://docs.aws.amazon.com/eks/)
-
-## Licença
-
-Este material é de uso educacional para a disciplina de Implementação de Servidor e Nuvem do curso de ADS da UniFAAT - Semestre 2026.1.
+### b) Comando de limpeza
+`docker rmi minha-imagem:tf3`
